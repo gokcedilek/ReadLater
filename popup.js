@@ -1,5 +1,4 @@
-const currentPage = document.getElementById('currentPage');
-currentPage.addEventListener('change', function () {
+document.getElementById('currentPage').addEventListener('change', function () {
   if (this.checked) {
     chrome.tabs.query(
       {
@@ -8,13 +7,15 @@ currentPage.addEventListener('change', function () {
       },
       (tabs) => {
         //notify content.js
-        chrome.tabs.sendMessage(tabs[0].id, {
-          todo: 'newTab',
-          tab: tabs[0],
-        });
+        // chrome.tabs.sendMessage(tabs[0].id, {
+        //   todo: 'newTab',
+        //   tab: tabs[0],
+        // });
 
         //notify bg.js
-        chrome.runtime.sendMessage({ message: 'newTab' }, function (response) {
+        chrome.runtime.sendMessage({ message: 'addNewPage' }, function (
+          response
+        ) {
           console.log(response.message);
         });
       }

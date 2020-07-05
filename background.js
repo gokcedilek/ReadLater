@@ -3,15 +3,6 @@
 //   chrome.tabs.sendMessage(tab.id, message);
 // });
 
-// chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-//   console.log(request);
-//   console.log(sender);
-//   if (request.message === 'newTab') {
-//     sendResponse({ message: 'smth happened?' });
-//     console.log('DONE');
-//   }
-// });
-
 let folder_id;
 
 //create the folder when the extension is first installed
@@ -24,7 +15,7 @@ chrome.runtime.onInstalled.addListener(function () {
 
 //listener 1: listen for events from popup.js, an event can be triggered at any tab, thus need to get the current tab, add tab's url to the extension's bookmarks folder
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.message === 'newTab') {
+  if (request.message === 'addNewPage') {
     chrome.tabs.query(
       {
         active: true,
@@ -41,5 +32,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 function addPage(parentId, title, url) {
   chrome.bookmarks.create({ parentId, title, url });
-  console.log('DONE???');
 }
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.message === 'getAllPages') {
+    chrome.bookmarks.getChildren(folder_id, function (pages) {
+      console.log('getting all pages!');
+      console.log(pages);
+      const senderTab = sender.tab;
+      chrome.tabs.sendMessage(senderTab.id, { message: pages }, function (
+        response
+      ) {});
+    });
+  }
+});
