@@ -15,5 +15,6 @@
   "browser_action": {
     "default_icon": "books.jpeg",
     "default_popup": "popup.html"
-  }
+  },
+  "permissions": ["tabs", "storage", "bookmarks"]
 }
