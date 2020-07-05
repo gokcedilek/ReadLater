@@ -34,15 +34,18 @@ function addPage(parentId, title, url) {
   chrome.bookmarks.create({ parentId, title, url });
 }
 
+function sendPages(tab, pages) {
+  chrome.tabs.sendMessage(tab.id, { message: { pages: pages } }, function (
+    response
+  ) {});
+}
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.message === 'getAllPages') {
     chrome.bookmarks.getChildren(folder_id, function (pages) {
       console.log('getting all pages!');
       console.log(pages);
-      const senderTab = sender.tab;
-      chrome.tabs.sendMessage(senderTab.id, { message: pages }, function (
-        response
-      ) {});
+      sendPages(sender.tab, pages);
     });
   }
 });
